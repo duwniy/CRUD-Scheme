@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.UserDTO;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -17,39 +19,52 @@ public class UserController {
         this.service = service;
     }
 
+    // ✅ Получить всех пользователей (возвращаем DTO)
     @GetMapping
-    public List<User> getUsers() {
-        return service.getAllUsers();
+    public List<UserDTO> getUsers() {
+        return service.getAllUsers().stream()
+                .map(user -> new UserDTO(user.getName(), user.getEmail()))
+                .collect(Collectors.toList());
     }
 
+    // ✅ Получить пользователя по email (возвращаем DTO)
     @GetMapping("/{email}")
-    public User getUser(@PathVariable String email) {
-        return service.getUserByEmail(email);
+    public UserDTO getUser(@PathVariable String email) {
+        User user = service.getUserByEmail(email);
+        return new UserDTO(user.getName(), user.getEmail());
     }
 
+    // ✅ Добавить пользователя (принимаем DTO, создаём сущность)
     @PostMapping
-    public User addUser(@RequestBody User user) {
-        return service.createUser(user);
+    public UserDTO addUser(@RequestBody UserDTO userDTO) {
+        User created = service.createUser(new User(userDTO.getName(), userDTO.getEmail()));
+        return new UserDTO(created.getName(), created.getEmail());
     }
 
+    // ❌ Удаление не требует DTO
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         service.deleteUser(id);
     }
 
+    // ✅ Полное обновление (PUT)
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        return service.updateUser(id, updatedUser);
+    public UserDTO updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        User updated = new User(userDTO.getName(), userDTO.getEmail());
+        User result = service.updateUser(id, updated);
+        return new UserDTO(result.getName(), result.getEmail());
     }
 
+    // ✅ Частичное обновление (PATCH)
     @PatchMapping("/{id}")
-    public User patchUser(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        return service.patchUser(id, updates);
+    public UserDTO patchUser(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        User patched = service.patchUser(id, updates);
+        return new UserDTO(patched.getName(), patched.getEmail());
     }
 
+    // HTML страница
     @GetMapping("/button")
     public String button() {
         return "redirect:/button.html";
     }
-
 }

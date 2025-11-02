@@ -10,7 +10,7 @@ public class UserDTO {
         this.email = email;
     }
 
-    // геттеры и сеттеры
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getEmail() { return email; }
