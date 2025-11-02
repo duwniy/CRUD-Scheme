@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Нажми кнопку</title>
+</head>
+<body>
+<h2>Нажми на кнопку:</h2>
+
+<button id="btn">Нажми меня</button>
+
+<p id="message"></p>
+
+<script>
+    printHello = function() {
+        console.log("Hello World");
+    }
+
+    printHello()
+    document.getElementById("btn").onclick = () => window.location.href = "/users";
+</script>
+</body>
+</html>
