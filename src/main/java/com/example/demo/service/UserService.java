@@ -50,7 +50,6 @@ public class UserService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            // Меняем только те поля, которые пришли в JSON
             if (updates.containsKey("name")) {
                 user.setName((String) updates.get("name"));
             }
@@ -63,5 +62,4 @@ public class UserService {
             throw new RuntimeException("User not found with id: " + id);
         }
     }
-
 }
